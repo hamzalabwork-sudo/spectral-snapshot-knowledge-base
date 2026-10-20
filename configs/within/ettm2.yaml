@@ -1,0 +1,130 @@
+# Continual forecasting, within-dataset benchmark: ettm2
+# Five seasonal regimes; target OT forecast from all variables; lookback 96, horizon 48.
+data:
+  seq_len: 96
+  pred_len: 48
+  feature_cols: null  # all 7 features
+  target_cols: [OT]
+  date_col: date
+  regime_split: seasonal
+
+backbone:
+  d_model: 128
+  d_state: 16
+  d_conv: 4
+  expand: 2
+  n_layers: 2
+  dropout: 0.2
+
+model:
+  use_revin: true
+
+# -- Baselines --
+
+ewc:
+  lambda_ewc: 1000.0
+
+replay:
+  capacity: 500
+
+si:
+  lambda_si: 1.0
+  epsilon: 0.1
+
+mas:
+  lambda_mas: 1.0
+
+derpp:
+  capacity: 500
+  alpha: 0.5
+  beta: 0.5
+
+fsnet:
+  gamma: 0.9
+  gamma_prime: 0.99
+  memory_capacity: 32
+  trigger_threshold: 0.1
+  adapt_lr: 0.01
+
+adaptivecl:
+  capacity: 500
+  soft_capacity: 64
+  memory_batch_size: 32
+  soft_batch_size: 16
+  alpha: 0.5
+  beta: 0.5
+  gamma: 0.5
+
+clser:
+  capacity: 500
+  reg_weight: 0.1
+  plastic_model_alpha: 0.99
+  stable_model_alpha: 0.999
+  plastic_model_update_freq: 0.9
+  stable_model_update_freq: 0.7
+
+# -- SpectraCL (our method) --
+
+spectracl:
+  # Spectral Replay Buffer (SIAR + FDRL + SMC)
+  capacity: 500
+  n_fft_fingerprint: 16
+  fdrl_weight: 0.3
+  siar_temperature: 0.5
+  siar_mse_weight: 0.2
+  use_raw_replay: true
+  raw_replay_capacity: 300
+  raw_replay_weight: 2.0
+
+  # Spectral Frequency-Response Regularisation (SFR)
+  sfr_weight: 0.5
+  sfr_n_probes: 32
+  sfr_interval: 3
+
+  # Cross-Spectral Density Memory (CSD)
+  use_csd: true
+  csd_blend: 0.3
+
+  # Frequency-Selective Hint Loss (FSHL -- replaces NSP)
+  use_hint_loss: true
+  hint_weight: 1.0
+  hint_decay: 0.7
+  hint_interval: 3
+
+  # Spectral Gradient Band Decomposition (SGBD -- replaces FPSP)
+  use_sgbd: true
+  sgbd_protection_strength: 0.7
+  sgbd_min_scale: 0.1
+
+  # Legacy NSP + FPSP (disabled -- replaced by FSHL + SGBD)
+  use_nsp: false
+  use_fpsp: false
+  protection_ratio: 0.2
+  partition_criterion: decay_rate
+  covariance_ema: 0.95
+  null_space_threshold: 0.99
+  min_freedom_ratio: 0.3
+  covariance_task_decay: 0.95
+
+  # Adaptive Protection (scales protection by spectral divergence)
+  adaptive_protection: false
+  adaptive_sensitivity: 2.0
+
+  # Supplementary EWC
+  use_ewc: true
+  ewc_lambda: 100.0
+
+  # LR schedule
+  lr_decay_per_task: 0.95
+
+# -- Training --
+
+training:
+  epochs_per_regime: 50
+  batch_size: 32
+  learning_rate: 0.0001
+  weight_decay: 0.001
+  grad_clip: 1.0
+  seed: 42
+  num_workers: 2
+  checkpoint_dir: checkpoints/continual

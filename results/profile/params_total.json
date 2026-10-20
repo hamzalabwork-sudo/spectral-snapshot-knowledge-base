@@ -1,0 +1,38 @@
+{
+ "traffic": {
+  "finetune": 352108,
+  "ewc": 352108,
+  "si": 352108,
+  "mas": 352108,
+  "agem": 352108,
+  "ifr_uniform": 352108,
+  "mir": 352108,
+  "derpp": 352108,
+  "clser": 352108,
+  "adaptivecl": 352108,
+  "fsnet": 352108,
+  "fredf": 352108,
+  "clfd": 3547542,
+  "clfd_ifr": 3547542,
+  "spectracl": 352108,
+  "ifr": 352108
+ },
+ "order_A": {
+  "finetune": 240178,
+  "ewc": 240178,
+  "si": 240178,
+  "mas": 240178,
+  "agem": 240178,
+  "ifr_uniform": 240178,
+  "mir": 240178,
+  "derpp": 240178,
+  "clser": 240178,
+  "adaptivecl": 240178,
+  "fsnet": 240178,
+  "fredf": 240178,
+  "clfd": 240441,
+  "clfd_ifr": 240441,
+  "spectracl": 240178,
+  "ifr": 240178
+ }
+}

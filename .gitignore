@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+logs/
+outputs/
+checkpoints/
+# datasets are downloaded separately (see data/README.md)
+data/*.csv
+# large per-run files written by the experiments
+results/**/continual_predictions_*.json
+results/**/snapshots/
